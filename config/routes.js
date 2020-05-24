@@ -13,6 +13,7 @@ module.exports.routes = {
   'POST /question'                : 'QuestionController.addQuestion',
   'PUT /question'                 : 'QuestionController.updateQuestion',
   'POST /tag'                     : 'QuestionCOntroller.addOrRemoveTag',
-  'GET /questions/:tag'           : 'QuestionController.questionsByTag'
+  'GET /questions/:tag'           : 'QuestionController.questionsByTag',
+  'GET /question/:id'             : 'QuestionController.getQuestion'
 
 };

@@ -1,7 +1,8 @@
 'use strict';
 
-var BaseCtrl = require('../base/Controller');
-var TagCtrl = require('./TagController');
+var BaseCtrl = require('../base/Controller'),
+    TagCtrl = require('./TagController'),
+    AnswerCtrl = require('./AnswerController');
 
 module.exports = {
 
@@ -45,7 +46,44 @@ module.exports = {
         }
     },
 
-    
+    getQuestion: (req, res) => {
+        var requiredParamError = BaseCtrl.checkRequiredParams(req, ['id']);
+        if(requiredParamError){
+            return res.badRequest(requiredParamError);
+        } else {
+            var questionId = req.param('id');
+            sails.models.question.findOne({'id': questionId})
+            .then(question => {
+                if(!question){
+                    var err = new Error();
+                    err.code = 404;
+                    err.message = "No question found with id - " + questionId;
+                    throw err;
+                } else {
+                    // get all answers
+                    AnswerCtrl.getAnswersByQuestionId(questionId)
+                    .then(answers => {
+                        question.answers = answers;
+
+                        return question;
+                    })
+                    .catch(err => {
+                        throw err;
+                    });
+                }
+            })
+            .then(question => {
+                return res.ok(question);
+            })
+            .catch(err => {
+                var errCode = err && err.code ? err.code : 500,
+                    errMessage = err && err.message ? err.message : err;
+                return res.status(errCode).send(errMessage);
+            });
+        }
+    },
+
+
     addQuestion: (req, res) => {
         var requiredParamError = BaseCtrl.checkRequiredParams(req, ['name']);
         if(requiredParamError){
