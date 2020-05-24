@@ -11,5 +11,6 @@
 module.exports.routes = {
 
   'POST /question'                : 'QuestionController.addQuestion',
+  'PUT /question'                 : 'QuestionController.updateQuestion',
 
 };

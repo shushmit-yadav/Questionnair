@@ -56,6 +56,29 @@ module.exports = {
                 }
             });
         }
-    }
+    },
+
+    updateQuestion: (req, res) => {
+        var requiredParamError = BaseCtrl.checkRequiredParams(req, ['questionId']);
+        if(requiredParamError){
+            return res.badRequest(requiredParamError);
+        } else {
+            var questionObj = {
+                'name': req.param('name'),
+                'description': req.param('description'),
+            };
+
+            sails.models.question.update({'id': req.param('questionId')}, questionObj)
+            .then(questionUpdated => {
+                return res.ok('Question has been updated successfully');
+            })
+            .catch(err => {
+                // asyncWaterfallCb(err);
+                var errCode = err && err.code ? err.code : 500,
+                    errMessage = err && err.message ? err.message : err;
+                return res.ok(errCode).send(errMessage);
+            });
+        }
+    },
 
 }
