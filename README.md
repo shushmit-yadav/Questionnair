@@ -1,26 +1,42 @@
 # on-surity-questionnair
 
-a [Sails v1](https://sailsjs.com) application
+Questionnair is a platform where user can submit their questions. He can tag his posted question. User can filter questions by tag, submit answers for any question.
 
+## Requirement
++ node - install node 
++ Sails.js - run command ** npm install sails -g **
++ mongodb
 
-### Links
+## Installation
 
-+ [Sails framework documentation](https://sailsjs.com/get-started)
-+ [Version notes / upgrading](https://sailsjs.com/documentation/upgrading)
-+ [Deployment tips](https://sailsjs.com/documentation/concepts/deployment)
-+ [Community support options](https://sailsjs.com/support)
-+ [Professional / enterprise options](https://sailsjs.com/enterprise)
+Unzip folder or clone [Questionnair](https://github.com/shushmit-yadav/Questionnair.git)
 
+Open terminal and navigate to project root directory and then do
 
-### Version info
++ npm install
 
-This app was originally generated on Sun May 24 2020 16:43:27 GMT+0530 (India Standard Time) using Sails v1.2.3.
+npm install will install all the libraries from package.json file.
 
-<!-- Internally, Sails used [`sails-generate@1.16.13`](https://github.com/balderdashy/sails-generate/tree/v1.16.13/lib/core-generators/new). -->
+Once installation done, then to start server, do
++ sails lift
 
-
-
-<!--
-Note:  Generators are usually run using the globally-installed `sails` CLI (command-line interface).  This CLI version is _environment-specific_ rather than app-specific, thus over time, as a project's dependencies are upgraded or the project is worked on by different developers on different computers using different versions of Node.js, the Sails dependency in its package.json file may differ from the globally-installed Sails CLI release it was originally generated with.  (Be sure to always check out the relevant [upgrading guides](https://sailsjs.com/upgrading) before upgrading the version of Sails used by your app.  If you're stuck, [get help here](https://sailsjs.com/support).)
--->
-
+## APIs
++ POST /question
+    + Body Parameters keys
+        + name - required
+        + description
+        + tag
++ PUT /question
+     + Body Parameters keys
+        + questionId - required
+        + name 
+        + description
++ POST /question/:id/tag
+     + Query parameter
+        + id
+     + Body Parameters
+        + tag
++ GET /questions/:tag
+     + Query param
+        + tag
+GET /question/:id
