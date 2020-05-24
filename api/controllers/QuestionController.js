@@ -162,14 +162,14 @@ module.exports = {
 
 
     addOrRemoveTag: (req, res) => {
-        var requiredParamError = BaseCtrl.checkRequiredParams(req, ['questionId', 'tag']);
+        var requiredParamError = BaseCtrl.checkRequiredParams(req, ['id', 'tag']);
         if(requiredParamError){
             return res.badRequest(requiredParamError);
         } else {
             var tagName = req.param('tag');
             TagCtrl.findOrCreateTag(tagName)
             .then(tag => {
-                module.exports.addOrRemoveTagFromQuestion(req.param('questionId'), tag.id)
+                module.exports.addOrRemoveTagFromQuestion(req.param('id'), tag.id)
                 .then(tagAddedOrRemoved => {
                     return tagAddedOrRemoved;
                 })
