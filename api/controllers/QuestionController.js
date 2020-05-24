@@ -81,4 +81,70 @@ module.exports = {
         }
     },
 
+
+    addOrRemoveTag: (req, res) => {
+        var requiredParamError = BaseCtrl.checkRequiredParams(req, ['questionId', 'tag']);
+        if(requiredParamError){
+            return res.badRequest(requiredParamError);
+        } else {
+            var tagName = req.param('tag');
+            TagCtrl.findOrCreateTag(tagName)
+            .then(tag => {
+                module.exports.addOrRemoveTagFromQuestion(req.param('questionId'), tag.id)
+                .then(tagAddedOrRemoved => {
+                    return tagAddedOrRemoved;
+                })
+                .catch(err => {
+                    throw err;
+                });
+            })
+            then(tagAddedOrRemoved => {
+                return res.ok('Question has been updated successfully with tag - '+ tagName);
+            })
+            .catch(err => {
+                var errCode = err && err.code ? err.code : 500,
+                    errMessage = err && err.message ? err.message : err;
+                return res.status(errCode).send(errMessage);
+            });
+        }
+    },
+
+
+
+    addOrRemoveTagFromQuestion: (questionId, tagId) => {
+        return new Promise((fulfill, reject) => {
+            sails.models.question.findOne({'id': questionId})
+            .then(question => {
+                if(question){
+                    var tags = question.tags ? question.tags : [];
+                    var tagIndex = tags.findIndex(item => item == tagId);
+                    if(tagIndex == -1){
+                        tags.push(tagId);
+                    } else {
+                        tags.splice(tagIndex, 1);
+                    }
+
+                    return sails.models.question.update({'id': question.id}, {'tags': tags})
+                    .then(tagsUpdated => {
+                        return tagsUpdated;
+                    })
+                    .catch(err => {
+                        throw err;
+                    });
+                } else {
+                    var err = new Error();
+                    err.code = 403;
+                    err.message = "Not question found with questionId - " + questionId;
+                    throw err;
+                }
+            })
+            .then(tagsUpdated => {
+                fulfill(tagsUpdated);
+            })
+            .catch(err => {
+                reject(err);
+            });
+        });
+    }
+
 }

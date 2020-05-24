@@ -12,5 +12,6 @@ module.exports.routes = {
 
   'POST /question'                : 'QuestionController.addQuestion',
   'PUT /question'                 : 'QuestionController.updateQuestion',
+  'POST /tag'                     : 'QuestionCOntroller.addOrRemoveTag',
 
 };
