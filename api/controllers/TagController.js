@@ -27,7 +27,20 @@ module.exports = {
                 reject(err);
             });
         });
+    },
+
+
+    getTagByTagName: (tagName) => {
+        return new Promise((fulfill, reject) => {
+            sails.models.tag.findOne({'name': tagName.toUpperCase()})
+            .then(tag => {
+                fulfill(tag);
+            })
+            .catch(err => {
+                reject(err);
+            });
+        });
     }
-    
+
 
 }

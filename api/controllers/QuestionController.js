@@ -5,6 +5,47 @@ var TagCtrl = require('./TagController');
 
 module.exports = {
 
+
+    questionsByTag: (req, res) => {
+        var requiredParamError = BaseCtrl.checkRequiredParams(req, ['tag']);
+        if(requiredParamError){
+            return res.badRequest(requiredParamError);
+        } else {
+            var tagName = req.param('tag'); 
+            TagCtrl.getTagByTagName(tagName)
+            .then(tag => {
+                return tag;
+            })
+            .then(tag => {
+                var tagId = tag ? tag.id : undefined;
+                return sails.models.question.find({
+                    where: {
+                        'tags': {
+                            'contains': tagId
+                        }
+                    },
+                    sort: [{ totalVotes: 'DESC'}, { createdAt: 'DESC'}],
+                    limit: 10
+                })
+                .then(questions => {
+                    return questions;
+                })
+                .catch(err => {
+                    throw err;
+                });
+            })
+            .then(questions => {
+                return res.ok(questions);
+            })
+            .catch(err => {
+                var errCode = err && err.code ? err.code : 500,
+                    errMessage = err && err.message ? err.message : err;
+                return res.status(errCode).send(errMessage); 
+            });
+        }
+    },
+
+    
     addQuestion: (req, res) => {
         var requiredParamError = BaseCtrl.checkRequiredParams(req, ['name']);
         if(requiredParamError){
